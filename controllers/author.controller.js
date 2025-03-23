@@ -1,11 +1,11 @@
-import Author from "../models/Author.js";
+import { Author } from "../models/Author.js";
 
 class AuthorController {
   async create(req, res) {
     try {
-      const { name } = req.body;
-      const newAuthor = await Author.create({ name });
-      res.status(201).json(newAuthor);
+      const author = new Author(req.body);
+      const savedAuthor = await author.save();
+      res.status(201).json(savedAuthor);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -13,7 +13,10 @@ class AuthorController {
 
   async getAll(req, res) {
     try {
-      const authors = await Author.findAll();
+      const authors = await Author.find();
+      if (!authors.length) {
+        throw new Error("Authors not found");
+      }
       res.json(authors);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -22,10 +25,8 @@ class AuthorController {
 
   async getById(req, res) {
     try {
-      const author = await Author.findByPk(req.params.id);
-      if (!author) {
-        throw new Error(`Author with id ${req.params.id} not found`);
-      }
+      const author = await Author.findById(req.params.id);
+      if (!author) throw new Error("Author not found");
       res.json(author);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -34,13 +35,12 @@ class AuthorController {
 
   async update(req, res) {
     try {
-      const { id } = req.params;
-      const { name } = req.body;
-      const [updated] = await Author.update({ name }, { where: { id } });
-      if (!updated) {
-        throw new Error(`Author with id ${id} not found`);
-      }
-      const updatedAuthor = await Author.findByPk(id);
+      const updatedAuthor = await Author.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      if (!updatedAuthor) throw new Error("Author not found");
       res.json(updatedAuthor);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -49,11 +49,8 @@ class AuthorController {
 
   async delete(req, res) {
     try {
-      const { id } = req.params;
-      const deleted = await Author.destroy({ where: { id } });
-      if (!deleted) {
-        throw new Error(`Author with id ${id} not found`);
-      }
+      const deletedAuthor = await Author.findByIdAndDelete(req.params.id);
+      if (!deletedAuthor) throw new Error("Author not found");
       res.json({ message: "Author deleted successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });

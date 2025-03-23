@@ -1,23 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../config/db.js";
+import mongoose from "mongoose";
 
-const Author = db.define(
-  "Author",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    tableName: "authors",
-    timestamps: false,
-  }
-);
+const authorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  bio: { type: String },
+});
 
-export default Author;
+export const Author = mongoose.model("Author", authorSchema);

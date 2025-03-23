@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-learn-project",
+  "name": "mongodb-connect-lesson",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -14,9 +14,10 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "nodemon": "^3.1.9",
-    "pg": "^8.13.3",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.5"
+    "mongodb": "^6.14.2",
+    "mongoose": "^8.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

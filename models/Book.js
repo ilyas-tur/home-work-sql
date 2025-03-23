@@ -1,53 +1,28 @@
-import { DataTypes } from "sequelize";
-import db from "../config/db.js";
-import Author from "./Author.js";
-import Publisher from "./Publisher.js";
+import mongoose from "mongoose";
 
-const Book = db.define(
-  "Book",
+const reviewSchema = new mongoose.Schema(
   {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    price: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-    },
-    authorId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Author,
-        key: "id",
-      },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    },
-    publisherId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Publisher,
-        key: "id",
-      },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE",
-    },
+    reviewer: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String },
   },
-  {
-    tableName: "books",
-    timestamps: true,
-  }
+  { _id: false }
 );
 
-Author.hasMany(Book, { foreignKey: "authorId" });
-Book.belongsTo(Author, { foreignKey: "authorId" });
+const bookSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    summary: { type: String },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Author",
+      required: true,
+    },
+    publisher: { type: mongoose.Schema.Types.ObjectId, ref: "Publisher" },
+    publishedDate: { type: Date },
+    reviews: [reviewSchema],
+  },
+  { timestamps: true }
+);
 
-Publisher.hasMany(Book, { foreignKey: "publisherId" });
-Book.belongsTo(Publisher, { foreignKey: "publisherId" });
-
-export default Book;
+export const Book = mongoose.model("Book", bookSchema);

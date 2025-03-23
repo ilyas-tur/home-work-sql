@@ -1,26 +1,29 @@
 import express from "express";
-import db from "./config/db.js";
+import mongoose from "mongoose";
 import authorRoutes from "./routes/author.routes.js";
-import publisherRoutes from "./routes/publisher.routes.js";
 import bookRoutes from "./routes/book.routes.js";
+import publisherRoutes from "./routes/publisher.routes.js";
+import "dotenv/config";
 
 const app = express();
-const PORT = 4000;
+const PORT = 5000;
+const connectionString = process.env.DB_URL;
+
+async function connectDatabase() {
+  try {
+    await mongoose.connect(connectionString);
+    console.log("Connected to database!");
+  } catch (error) {
+    console.log("Error!");
+  }
+}
 
 app.use(express.json());
-
 app.use("/authors", authorRoutes);
-app.use("/publishers", publisherRoutes);
 app.use("/books", bookRoutes);
+app.use("/publishers", publisherRoutes);
 
 app.listen(PORT, async () => {
-  try {
-    await db.sync();
-    console.log("База данных подключена!");
-  } catch (error) {
-    console.log(
-      "Не получилось подключится к базе данных\n" + "Error: " + error.message
-    );
-  }
-  console.log(`Сервер запущем на http://localhost:${PORT}`);
+  await connectDatabase();
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

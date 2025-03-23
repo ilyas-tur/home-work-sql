@@ -1,23 +1,8 @@
-import { DataTypes } from "sequelize";
-import db from "../config/db.js";
+import mongoose from "mongoose";
 
-const Publisher = db.define(
-  "Publisher",
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    tableName: "publishers",
-    timestamps: false,
-  }
-);
+const publisherSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  address: { type: String },
+});
 
-export default Publisher;
+export const Publisher = mongoose.model("Publisher", publisherSchema);
