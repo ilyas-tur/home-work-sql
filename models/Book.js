@@ -12,13 +12,17 @@ const reviewSchema = new mongoose.Schema(
 const bookSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    summary: { type: String },
+    summary: { type: String, required: false },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Author",
       required: true,
     },
-    publisher: { type: mongoose.Schema.Types.ObjectId, ref: "Publisher" },
+    publisher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Publisher",
+      required: false,
+    },
     publishedDate: { type: Date },
     reviews: [reviewSchema],
   },
