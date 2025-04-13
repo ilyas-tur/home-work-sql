@@ -30,10 +30,13 @@ const publishedDate = body("publishedDate")
   .isISO8601()
   .withMessage("Поле publishedDate должно быть датой!");
 
+const categories = body("categories").optional().isArray();
+
 export const bookValidator = createCustomValidatorMiddleware([
   title,
   summary,
   author,
   publisher,
   publishedDate,
+  categories,
 ]);
